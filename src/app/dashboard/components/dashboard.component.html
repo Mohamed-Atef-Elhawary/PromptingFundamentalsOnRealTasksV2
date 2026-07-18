@@ -1,0 +1,51 @@
+<div class="dashboard">
+  <h2>Enterprise RxJS Dashboard</h2>
+
+  <input type="text" placeholder="Search Users..." [formControl]="searchControl" />
+
+  <br /><br />
+
+  <button (click)="submit()">Save Dashboard</button>
+
+  <button (click)="updateAlerts()">Update Alerts</button>
+
+  <button (click)="loadTodoDetails(users())">Load Todo Details</button>
+
+  <hr />
+
+  <h3>Users</h3>
+
+  <ul>
+    @for (user of users(); track user.id) {
+      <li>
+        {{ user.name }}
+      </li>
+    }
+  </ul>
+
+  <hr />
+
+  <h3>Todos</h3>
+
+  <ul>
+    @for (todo of todos(); track todo.id) {
+      <li>
+        {{ todo.title }}
+      </li>
+    }
+  </ul>
+
+  <hr />
+
+  <h3>Logs</h3>
+
+  <ul>
+    @for (log of logs(); track $index) {
+      <li>{{ log }}</li>
+    }
+  </ul>
+
+  @if (loading()) {
+    <p>Saving Dashboard...</p>
+  }
+</div>
