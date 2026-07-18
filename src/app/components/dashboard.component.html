@@ -1,0 +1,56 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Enterprise Metrics Console</h1>
+    <span class="badge-critical">Critical Alerts: {{ criticalCount() }}</span>
+  </header>
+
+  <!-- Control Panel -->
+  <div class="control-panel">
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Type to filter 5k records instantly..."
+      class="search-input"
+    />
+
+    <button
+      [disabled]="isExporting || stateSignal().metrics.length === 0"
+      (click)="onExportClick()"
+      class="btn-export"
+    >
+      {{ isExporting ? 'Processing Export...' : 'Export Current Dataset' }}
+    </button>
+  </div>
+
+  <!-- Status Info States -->
+  @if (stateSignal().loading) {
+    <div class="feedback status-loading">Parsing and filtering data streams...</div>
+  }
+
+  @if (stateSignal().error) {
+    <div class="feedback status-error">{{ stateSignal().error }}</div>
+  }
+
+  <!-- Virtualizable Optimized List -->
+  <main class="metrics-display">
+    <div class="results-meta">
+      Showing <strong>{{ stateSignal().metrics.length }}</strong> active threads
+    </div>
+
+    <div class="scroll-container">
+      @for (item of stateSignal().metrics; track item.id) {
+        <div class="metric-card" [attr.data-status]="item.status">
+          <div class="card-title">{{ item.name }}</div>
+          <div class="card-body">
+            <span>Category: {{ item.category }}</span>
+            <span class="value-text">Utilization: **{{ item.value }}%**</span>
+          </div>
+        </div>
+      } @empty {
+        @if (!stateSignal().loading) {
+          <div class="no-results">No metric markers match your criteria.</div>
+        }
+      }
+    </div>
+  </main>
+</div>
