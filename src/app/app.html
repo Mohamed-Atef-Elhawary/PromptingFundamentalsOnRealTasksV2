@@ -1,0 +1,40 @@
+<div class="dashboard-container">
+  <h2>Enterprise Data Analytics Dashboard</h2>
+
+  <!-- Search Input UI Control -->
+  <div class="search-box">
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Type to search millions of records securely..."
+      class="form-input"
+    />
+  </div>
+
+  <!-- Error Alerts Display -->
+  @if (errorMessage) {
+    <div class="error-alert">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Data Display Grid via Async Pipe -->
+  <div class="results-grid">
+    @if (filteredItems$ | async; as items) {
+      @if (items.length === 0) {
+        <p class="no-data">No records found matching your query.</p>
+      } @else {
+        <ul>
+          @for (item of items; track item.id) {
+            <li class="data-row">
+              <strong>{{ item.name }}</strong> - {{ item.status }}
+            </li>
+          }
+        </ul>
+      }
+    } @else {
+      <!-- Fallback state while typing/loading -->
+      <p class="loading-state">Awaiting search input or streaming results...</p>
+    }
+  </div>
+</div>
