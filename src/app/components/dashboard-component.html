@@ -1,0 +1,62 @@
+<!-- components/dashboard-component.html -->
+
+<div class="dashboard">
+  <!-- ============ 1. SWITCHMAP — TYPEAHEAD SEARCH ============ -->
+  <section class="panel">
+    <h2>User Search</h2>
+    <input type="text" [formControl]="searchControl" placeholder="Type a name…" class="input" />
+
+    <p *ngIf="isSearching()">Searching…</p>
+
+    <ul>
+      <li *ngFor="let user of searchResults()">
+        {{ user.name }} ({{ user.email }})
+        <button type="button" (click)="onFetchDetails([user.id])">Load details</button>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ 2. EXHAUSTMAP — FORM SUBMIT ============ -->
+  <section class="panel">
+    <h2>Create Post</h2>
+    <form [formGroup]="postForm" (ngSubmit)="onSubmitPost()">
+      <input type="text" formControlName="title" placeholder="Title" class="input" />
+      <textarea formControlName="body" placeholder="Body" class="input"></textarea>
+
+      <button type="submit" [disabled]="postForm.invalid || isSubmitting()">
+        {{ isSubmitting() ? 'Submitting…' : 'Submit' }}
+      </button>
+    </form>
+
+    <p *ngIf="lastSubmittedPost() as post">Last submitted: "{{ post.title }}" (id {{ post.id }})</p>
+  </section>
+
+  <!-- ============ 3. CONCATMAP — SEQUENTIAL ALERT QUEUE ============ -->
+  <section class="panel">
+    <h2>Alerts</h2>
+    <ul>
+      <li *ngFor="let alert of alerts()">
+        <span [class.read]="alert.status === 'read'">{{ alert.message }}</span>
+        <button type="button" [disabled]="alert.status === 'read'" (click)="onMarkAlertRead(alert)">
+          {{ alert.status === 'read' ? 'Read' : 'Mark as read' }}
+        </button>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ 4. MERGEMAP — PARALLEL DETAILS FETCH ============ -->
+  <section class="panel">
+    <h2>User Details (parallel fetch, max 3 concurrent)</h2>
+    <button type="button" (click)="onFetchDetails([1, 2, 3, 4, 5])">
+      Load details for users 1–5
+    </button>
+
+    <p *ngIf="isFetchingDetails()">Fetching details…</p>
+
+    <ul>
+      <li *ngFor="let detail of userDetails()">
+        {{ detail.name }} — {{ detail.company.name }}, {{ detail.address.city }}
+      </li>
+    </ul>
+  </section>
+</div>
